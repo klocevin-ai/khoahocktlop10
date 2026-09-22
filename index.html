@@ -117,11 +117,14 @@
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                         <input type="text" id="searchInput" oninput="filterArticles()" placeholder="Tìm kiếm bài báo, từ khóa, tác giả..." class="w-full pl-11 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 border border-slate-200 dark:border-slate-700">
                     </div>
-                    <select id="categoryFilter" onchange="filterArticles()" class="w-full sm:w-48 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+                    <select id="categoryFilter" onchange="filterArticles()" class="w-full sm:w-56 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
                         <option value="ALL">Tất cả lĩnh vực</option>
-                        <option value="AI">Trí Tuệ Nhân Tạo</option>
-                        <option value="BIO">Sinh Học & Gen</option>
+                        <option value="BEHAVIOR">Khoa Học Hành Vi & Tâm Lý</option>
+                        <option value="AI">Trí Tuệ Nhân Tạo & AI</option>
+                        <option value="BIO">Sinh Học Phân Tử & Gen</option>
                         <option value="PHYSICS">Vật Lý Lượng Tử</option>
+                        <option value="ENERGY">Năng Lượng Tái Tạo</option>
+                        <option value="CHEM">Hóa Học & Vật Liệu</option>
                     </select>
                 </div>
             </div>
@@ -132,10 +135,10 @@
     <section id="bai-bao" class="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between mb-8">
             <div>
-                <h2 class="text-2xl font-bold font-display text-slate-900 dark:text-white">Bài Báo Nghiên Cứu Mới Nhất</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Các công trình nghiên cứu nổi bật đã qua kiểm duyệt nội bộ</p>
+                <h2 class="text-2xl font-bold font-display text-slate-900 dark:text-white">Kho Bài Báo Nghiên Cứu Chuyên Sâu</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Các công trình xuất bản chính thức từ NXB Huỳnh Phúc Khánh Lộc</p>
             </div>
-            <span id="articleCount" class="text-xs font-semibold px-3 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">3 bài báo</span>
+            <span id="articleCount" class="text-xs font-semibold px-3 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">6 bài báo</span>
         </div>
 
         <!-- Cards Grid -->
@@ -349,11 +352,11 @@
                 <div class="grid grid-cols-2 gap-3 text-center text-xs">
                     <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                         <span class="block text-slate-400 mb-0.5">Số bài công bố</span>
-                        <span class="text-lg font-bold text-brand-600 dark:text-brand-400">03 Bài báo</span>
+                        <span class="text-lg font-bold text-brand-600 dark:text-brand-400">06 Bài báo</span>
                     </div>
                     <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                         <span class="block text-slate-400 mb-0.5">Lĩnh vực chính</span>
-                        <span class="text-lg font-bold text-brand-600 dark:text-brand-400">AI & Interactive</span>
+                        <span class="text-lg font-bold text-brand-600 dark:text-brand-400">AI & Tâm Lý Học</span>
                     </div>
                 </div>
 
@@ -368,12 +371,29 @@
 
     <!-- Application Logic Scripts -->
     <script>
-        // Article Data Repository
+        // Article Data Repository Extended
         const articles = [
             {
                 id: "art-1",
+                category: "BEHAVIOR",
+                categoryName: "Khoa Học Hành Vi & Tâm Lý",
+                title: "Khảo Sát Hành Vi 'Thức Khuya Chủ Động' (Bedtime Procrastination) ở Học Sinh THPT",
+                author: "Huỳnh Phúc Khánh Lộc",
+                date: "22/09/2026",
+                abstract: "Nghiên cứu khảo sát tâm lý hành vi trì hoãn giấc ngủ không do áp lực công việc ở học sinh THPT, đề xuất các giải pháp quản lý thời gian và vệ sinh giấc ngủ hiệu quả.",
+                body: `<p>Hành vi 'Thức khuya chủ động' (Bedtime Procrastination) đang trở thành một hiện tượng tâm lý phổ biến trong lứa tuổi học sinh trung học phổ thông. Công trình nghiên cứu này do <strong>Huỳnh Phúc Khánh Lộc</strong> (Trường THPT Nguyễn Đình Chiểu) chủ trì thực hiện nhằm phân tích nguyên nhân tâm lý và tác động đến hiệu suất học tập.</p>
+                       <p>Thông qua khảo sát thực nghiệm trên nhóm học sinh THPT, nghiên cứu đã xác định các yếu tố kích thích từ thiết bị điện tử và nhu cầu tìm kiếm không gian cá nhân về đêm là hai nguyên nhân hàng đầu. Từ đó, đề xuất mô hình điều chỉnh hành vi theo chu kỳ 21 ngày.</p>`,
+                chartData: {
+                    labels: ['Giải trí mạng', 'Xem video/phim', 'Nhắn tin', 'Áp lực bài tập', 'Lý do khác'],
+                    datasets: [
+                        { label: 'Tỷ lệ nguyên nhân thức khuya (%)', data: [42, 28, 15, 10, 5], backgroundColor: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#cbd5e1'] }
+                    ]
+                }
+            },
+            {
+                id: "art-2",
                 category: "AI",
-                categoryName: "Trí Tuệ Nhân Tạo",
+                categoryName: "Trí Tuệ Nhân Tạo & AI",
                 title: "Ứng Dụng Mạng Nơ-ron Nhân Tạo Trong Dự Đoán Cấu Trúc Biến Biến Gen Lượng Tử",
                 author: "Huỳnh Phúc Khánh Lộc",
                 date: "20/09/2026",
@@ -389,9 +409,9 @@
                 }
             },
             {
-                id: "art-2",
+                id: "art-3",
                 category: "BIO",
-                categoryName: "Sinh Học & Gen",
+                categoryName: "Sinh Học Phân Tử & Gen",
                 title: "Mô Phỏng Tương Tác Cấu Trúc Xoắn Kép DNA Bằng Thuật Toán Hình Học Không Gian 3D",
                 author: "Huỳnh Phúc Khánh Lộc",
                 date: "12/08/2026",
@@ -406,7 +426,7 @@
                 }
             },
             {
-                id: "art-3",
+                id: "art-4",
                 category: "PHYSICS",
                 categoryName: "Vật Lý Lượng Tử",
                 title: "Mô Hình Hóa Sự Nhiễu Loạn Hạt Lượng Tử Trong Trường Lực Từ Nhân Tạo",
@@ -418,6 +438,38 @@
                     labels: ['0.1 T', '0.5 T', '1.0 T', '2.0 T'],
                     datasets: [
                         { label: 'Biên độ dao động hạt', data: [12, 19, 8, 3], borderColor: '#8b5cf6', fill: true, backgroundColor: 'rgba(139, 92, 246, 0.1)' }
+                    ]
+                }
+            },
+            {
+                id: "art-5",
+                category: "ENERGY",
+                categoryName: "Năng Lượng Tái Tạo",
+                title: "Tối Ưu Hiệu Suất Mạng Lưới Pin Nhiệt Mặt Trời Perovskite Lớp Đôi Thế Hệ Mới",
+                author: "Huỳnh Phúc Khánh Lộc",
+                date: "18/05/2026",
+                abstract: "Giải pháp nâng cao độ bền thời tiết và dải hấp thụ quang phổ cho các tấm pin quang điện Perovskite áp dụng công nghệ màng phủ nano.",
+                body: `<p>Nghiên cứu trình bày giải pháp kết hợp hai lớp hấp thụ có khoảng cấm năng lượng bổ trợ nhau, giúp nâng cao hiệu suất chuyển đổi quang năng lên đến 34.2% trong điều kiện tiêu chuẩn thử nghiệm.</p>`,
+                chartData: {
+                    labels: ['Năm 2023', 'Năm 2024', 'Năm 2025', 'Năm 2026'],
+                    datasets: [
+                        { label: 'Hiệu suất quang điện (%)', data: [24.1, 28.5, 31.0, 34.2], borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.2)', fill: true }
+                    ]
+                }
+            },
+            {
+                id: "art-6",
+                category: "CHEM",
+                categoryName: "Hóa Học & Vật Liệu",
+                title: "Tổng Hợp Vật Liệu Khung Kim Loại - Hữu Cơ (MOFs) Ứng Dụng Hấp Phụ Khí Nhà Kính",
+                author: "Huỳnh Phúc Khánh Lộc",
+                date: "02/04/2026",
+                abstract: "Mô phỏng cấu trúc xốp vi mô của cấu trúc MOFs nhằm tối đa hóa diện tích bề mặt tiếp xúc và khả năng lưu trữ CO2 ở nhiệt độ phòng.",
+                body: `<p>Công trình xuất bản từ NXB Huỳnh Phúc Khánh Lộc giới thiệu phương pháp tổng hợp MOFs dung nhiệt nhẹ, giảm thiểu năng lượng tiêu tốn trong sản xuất vật liệu lọc môi trường.</p>`,
+                chartData: {
+                    labels: ['Mẫu 1', 'Mẫu 2', 'Mẫu 3', 'Mẫu Tối Ưu'],
+                    datasets: [
+                        { label: 'Dung lượng hấp thụ CO2 (mmol/g)', data: [3.2, 5.1, 6.8, 9.4], backgroundColor: '#10b981' }
                     ]
                 }
             }
