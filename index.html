@@ -56,9 +56,16 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #334155;
         }
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s infinite ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-darkbg text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+<body class="bg-slate-50 dark:bg-darkbg text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col relative">
 
     <!-- Header Navigation -->
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-darkbg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
@@ -83,6 +90,11 @@
 
             <!-- Actions -->
             <div class="flex items-center space-x-3">
+                <!-- AI Assistant Trigger in Nav Header -->
+                <button onclick="toggleAiChat()" class="px-3 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-brand-600 hover:from-purple-700 hover:to-brand-700 text-white transition-all flex items-center gap-2 text-xs font-semibold shadow-md">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span class="hidden md:inline">Trợ Lý AI</span>
+                </button>
                 <!-- Bookmarks Quick Toggle -->
                 <button onclick="toggleBookmarkFilter()" id="bookmarkFilterBtn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 text-xs font-semibold" title="Danh sách đã lưu">
                     <i class="fa-solid fa-bookmark text-amber-500"></i>
@@ -175,7 +187,6 @@
                 <button onclick="switchLab('nn')" id="tab-nn" class="lab-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-brand-600 text-white transition-all">Mạng Nơ-ron (Neural Net)</button>
                 <button onclick="switchLab('dna')" id="tab-dna" class="lab-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Cấu Trúc DNA 3D</button>
                 <button onclick="switchLab('quantum')" id="tab-quantum" class="lab-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Hạt Lượng Tử (Quantum)</button>
-                <!-- Chức năng lab mới -->
                 <button onclick="switchLab('solar')" id="tab-solar" class="lab-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Quang Phổ Solar (Energy)</button>
             </div>
 
@@ -264,6 +275,10 @@
                     <span id="modalReadTime" class="text-xs text-slate-400 border-l border-slate-300 dark:border-slate-700 pl-3"><i class="fa-regular fa-clock"></i> 3 phút đọc</span>
                 </div>
                 <div class="flex items-center gap-2">
+                    <!-- Ask AI Button inside Modal -->
+                    <button onclick="askAiAboutCurrentArticle()" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-brand-600 hover:from-purple-700 hover:to-brand-700 text-white text-xs font-semibold transition-all flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-robot"></i> Hỏi AI về bài này
+                    </button>
                     <!-- Share Button -->
                     <button onclick="shareArticle()" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium transition-colors flex items-center gap-1">
                         <i class="fa-solid fa-share-nodes"></i> Chia sẻ
@@ -390,6 +405,75 @@
                     <p>Mục tiêu tiếp theo là mở rộng nền tảng mô phỏng trực quan các thuật toán phức tạp, giúp học sinh THPT dễ dàng tiếp cận với khoa học máy tính hiện đại.</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- AI ASSISTANT CHATBOT MODAL & FLOATING BUTTON -->
+    <!-- ========================================== -->
+    <!-- Floating Trigger Button -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button id="aiFloatingBtn" onclick="toggleAiChat()" class="relative group p-4 rounded-full bg-gradient-to-r from-purple-600 to-brand-600 text-white shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center animate-pulse-subtle">
+            <i class="fa-solid fa-robot text-2xl"></i>
+            <span class="absolute right-full mr-3 px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                Hỏi SciTech AI
+            </span>
+            <span class="absolute top-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-white dark:border-slate-900 rounded-full"></span>
+        </button>
+    </div>
+
+    <!-- AI Chat Window -->
+    <div id="aiChatWindow" class="fixed bottom-24 right-4 sm:right-6 z-50 w-[92vw] sm:w-[420px] max-h-[600px] h-[80vh] bg-white dark:bg-darkcard rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 hidden flex-col overflow-hidden transition-all duration-300">
+        <!-- Chat Header -->
+        <div class="p-4 bg-gradient-to-r from-purple-700 via-indigo-700 to-brand-700 text-white flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+                    <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold leading-tight">SciTech AI Assistant</h3>
+                    <p class="text-[10px] text-purple-200">Trợ Lý Tri Thức Khoa Học Tự Động</p>
+                </div>
+            </div>
+            <button onclick="toggleAiChat()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Chat Quick Prompts Bar -->
+        <div class="p-2 bg-slate-100 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 flex gap-1.5 overflow-x-auto custom-scrollbar text-[11px]">
+            <button onclick="sendQuickPrompt('Tóm tắt bài báo về Thức Khuya Chủ Động')" class="px-2.5 py-1 rounded-full bg-white dark:bg-slate-800 hover:bg-brand-50 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                🌙 Thức khuya
+            </button>
+            <button onclick="sendQuickPrompt('Giới thiệu tác giả Huỳnh Phúc Khánh Lộc')" class="px-2.5 py-1 rounded-full bg-white dark:bg-slate-800 hover:bg-brand-50 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                👨‍🎓 Tác giả
+            </button>
+            <button onclick="sendQuickPrompt('Hướng dẫn sử dụng các mô phỏng Lab')" class="px-2.5 py-1 rounded-full bg-white dark:bg-slate-800 hover:bg-brand-50 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 whitespace-nowrap">
+                🧪 Lab Simulation
+            </button>
+        </div>
+
+        <!-- Messages Container -->
+        <div id="aiMessages" class="p-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 text-xs leading-relaxed">
+            <!-- Bot Welcome Message -->
+            <div class="flex items-start gap-2.5">
+                <div class="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs shrink-0 mt-0.5">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[85%] border border-slate-200/60 dark:border-slate-700/60">
+                    Xin chào! Tôi là <strong>SciTech AI Assistant</strong>. Tôi có thể hỗ trợ bạn tìm hiểu về các công trình nghiên cứu, thông tin tác giả <strong>Huỳnh Phúc Khánh Lộc</strong> hoặc giải thích các mô phỏng phòng Lab!
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div class="p-3 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+            <form onsubmit="handleAiSubmit(event)" class="flex items-center gap-2">
+                <input type="text" id="aiInput" placeholder="Hỏi AI về các bài nghiên cứu..." class="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200">
+                <button type="submit" class="p-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white transition-colors shrink-0">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </form>
         </div>
     </div>
 
@@ -909,7 +993,7 @@
             ctx.fill();
         }
 
-        // Solar Spectrum Simulation (Mới)
+        // Solar Spectrum Simulation
         let solarRays = [];
         function initSolar() {
             solarRays = [];
@@ -982,6 +1066,156 @@
             if(currentLabMode === 'nn') initNN();
             else if(currentLabMode === 'quantum') initQuantum();
             else if(currentLabMode === 'solar') initSolar();
+        }
+
+        // ==========================================
+        // AI ASSISTANT CORE LOGIC
+        // ==========================================
+        function toggleAiChat() {
+            const win = document.getElementById('aiChatWindow');
+            win.classList.toggle('hidden');
+            win.classList.toggle('flex');
+            if(!win.classList.contains('hidden')) {
+                document.getElementById('aiInput').focus();
+            }
+        }
+
+        function sendQuickPrompt(promptText) {
+            document.getElementById('aiInput').value = promptText;
+            handleAiSubmit(new Event('submit'));
+        }
+
+        function askAiAboutCurrentArticle() {
+            if(!currentArticle) return;
+            const win = document.getElementById('aiChatWindow');
+            if(win.classList.contains('hidden')) {
+                toggleAiChat();
+            }
+            sendQuickPrompt(`Giải thích rõ hơn về bài nghiên cứu: "${currentArticle.title}"`);
+        }
+
+        function appendUserMessage(text) {
+            const container = document.getElementById('aiMessages');
+            const msgHtml = `
+                <div class="flex items-start justify-end gap-2.5">
+                    <div class="bg-purple-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[85%]">
+                        ${escapeHtml(text)}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', msgHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendBotMessage(text) {
+            const container = document.getElementById('aiMessages');
+            const msgHtml = `
+                <div class="flex items-start gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs shrink-0 mt-0.5">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[85%] border border-slate-200/60 dark:border-slate-700/60">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', msgHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.innerText = text;
+            return div.innerHTML;
+        }
+
+        function handleAiSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('aiInput');
+            const query = input.value.trim();
+            if(!query) return;
+
+            appendUserMessage(query);
+            input.value = '';
+
+            // Show Thinking Indicator
+            const container = document.getElementById('aiMessages');
+            const loadingId = 'ai-loading-' + Date.now();
+            const loadingHtml = `
+                <div id="${loadingId}" class="flex items-start gap-2.5">
+                    <div class="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs shrink-0 mt-0.5 animate-bounce">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-800 text-slate-400 p-3 rounded-2xl rounded-tl-none text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-notch animate-spin"></i> Đang suy nghĩ...
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', loadingHtml);
+            container.scrollTop = container.scrollHeight;
+
+            // Generate Smart AI Reply Based on Website Data
+            setTimeout(() => {
+                const loadingElem = document.getElementById(loadingId);
+                if(loadingElem) loadingElem.remove();
+
+                const response = generateAiResponse(query);
+                appendBotMessage(response);
+            }, 600);
+        }
+
+        function generateAiResponse(q) {
+            const query = q.toLowerCase();
+
+            // 1. Tác giả & NXB
+            if(query.includes('tác giả') || query.includes('khánh lộc') || query.includes('nxb') || query.includes('sáng lập')) {
+                return `<strong>Huỳnh Phúc Khánh Lộc</strong> là học sinh Trường THPT Nguyễn Đình Chiểu, đồng thời là nhà sáng lập <strong>NXB Huỳnh Phúc Khánh Lộc</strong>. Tác giả chuyên nghiên cứu ứng dụng Trí tuệ Nhân tạo (AI), mô phỏng Sinh - Lý lượng tử và xây dựng hệ thống tri thức số.`;
+            }
+
+            // 2. Thức khuya
+            if(query.includes('thức khuya') || query.includes('bedtime') || query.includes('hành vi')) {
+                const art = articles.find(a => a.id === 'art-1');
+                return `<strong>${art.title}</strong>:<br>${art.abstract}<br><br>💡 <i>Nguyên nhân chính:</i> Do giải trí mạng (42%) và xem video (28%). Nghiên cứu đề xuất mô hình điều chỉnh 21 ngày.`;
+            }
+
+            // 3. AI / Gen / Neural
+            if(query.includes('mạng nơ-ron') || query.includes('gen') || query.includes('ai') || query.includes('biến biến')) {
+                const art = articles.find(a => a.id === 'art-2');
+                return `<strong>${art.title}</strong>:<br>Tác giả đề xuất kiến trúc Transformer sửa đổi giúp tối ưu hàm mất mát, đạt độ chính xác <strong>98.4%</strong> trong việc dự đoán cấu trúc sinh học.`;
+            }
+
+            // 4. Lab & Mô phỏng
+            if(query.includes('lab') || query.includes('mô phỏng') || query.includes('canvas') || query.includes('dna') || query.includes('lượng tử') || query.includes('solar')) {
+                return `Mục <strong>SciTech Interactive Lab</strong> bao gồm 4 mô phỏng tương tác trực tiếp:<br>
+                • <strong>Neural Net</strong>: Kích hoạt nút thần kinh theo vị trí con trỏ chuột.<br>
+                • <strong>3D DNA Helix</strong>: Mô phỏng chuỗi xoắn kép biến thiên chu kỳ.<br>
+                • <strong>Quantum Cloud</strong>: Mô hình hóa xác suất hạt trong quỹ đạo hạt nhân.<br>
+                • <strong>Solar Spectrum</strong>: Mô phỏng dòng hạt photon va chạm tấm pin Perovskite.`;
+            }
+
+            // 5. Danh sách bài báo
+            if(query.includes('bài báo') || query.includes('nghiên cứu') || query.includes('danh sách') || query.includes('có mấy')) {
+                let listStr = articles.map((a, i) => `${i+1}. <strong>${a.title}</strong> (${a.categoryName})`).join('<br>');
+                return `Hiện tại NXB Huỳnh Phúc Khánh Lộc đã công bố ${articles.length} bài báo nghiên cứu:<br><br>${listStr}`;
+            }
+
+            // Tìm kiếm bài báo tương thích từ từ khóa
+            const matchedArticle = articles.find(a => 
+                a.title.toLowerCase().includes(query) || 
+                a.abstract.toLowerCase().includes(query) ||
+                a.categoryName.toLowerCase().includes(query)
+            );
+
+            if(matchedArticle) {
+                return `Tôi tìm thấy bài báo liên quan: <strong>"${matchedArticle.title}"</strong>.<br><br>📝 <i>Tóm tắt:</i> ${matchedArticle.abstract}<br><br><button onclick="openReaderModal('${matchedArticle.id}')" class="mt-1 px-2.5 py-1 rounded-lg bg-brand-600 text-white text-[11px] font-semibold">Mở đọc bài báo này</button>`;
+            }
+
+            // Default fallback
+            return `Cảm ơn câu hỏi của bạn! Tôi có thể trả lời các câu hỏi về:
+            <br>• Các bài báo nghiên cứu (Tâm lý, AI, DNA, Lượng tử, Pin Mặt trời, MOFs)
+            <br>• Tác giả <strong>Huỳnh Phúc Khánh Lộc</strong> & NXB
+            <br>• Hướng dẫn trải nghiệm phòng <strong>SciTech Interactive Lab</strong>.
+            <br><br>Bạn hãy nhập từ khóa liên quan nhé!`;
         }
 
         // Initialize App on window load
