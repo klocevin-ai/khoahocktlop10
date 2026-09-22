@@ -83,6 +83,11 @@
 
             <!-- Actions -->
             <div class="flex items-center space-x-3">
+                <!-- Bookmarks Quick Toggle -->
+                <button onclick="toggleBookmarkFilter()" id="bookmarkFilterBtn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 text-xs font-semibold" title="Danh sách đã lưu">
+                    <i class="fa-solid fa-bookmark text-amber-500"></i>
+                    <span id="bookmarkCount" class="hidden sm:inline">0</span>
+                </button>
                 <!-- Dark Mode Toggle -->
                 <button id="themeToggleBtn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
                     <i class="fa-solid fa-moon dark:hidden"></i>
@@ -111,13 +116,15 @@
                     Nền tảng xuất bản báo cáo nghiên cứu và mô phỏng tương tác trực tiếp được phát triển bởi **Huỳnh Phúc Khánh Lộc** - Học sinh Trường THPT Nguyễn Đình Chiểu.
                 </p>
 
-                <!-- Search and Filter Bar -->
-                <div class="bg-white dark:bg-darkcard p-3 rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-3">
+                <!-- Extended Search and Filter Bar -->
+                <div class="bg-white dark:bg-darkcard p-3 rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 flex flex-col md:flex-row items-center gap-3">
                     <div class="relative w-full">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="searchInput" oninput="filterArticles()" placeholder="Tìm kiếm bài báo, từ khóa, tác giả..." class="w-full pl-11 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 border border-slate-200 dark:border-slate-700">
+                        <input type="text" id="searchInput" oninput="filterArticles()" placeholder="Tìm kiếm bài báo, từ khóa, nội dung..." class="w-full pl-11 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 border border-slate-200 dark:border-slate-700">
                     </div>
-                    <select id="categoryFilter" onchange="filterArticles()" class="w-full sm:w-56 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+                    
+                    <!-- Filter Lĩnh vực -->
+                    <select id="categoryFilter" onchange="filterArticles()" class="w-full md:w-56 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
                         <option value="ALL">Tất cả lĩnh vực</option>
                         <option value="BEHAVIOR">Khoa Học Hành Vi & Tâm Lý</option>
                         <option value="AI">Trí Tuệ Nhân Tạo & AI</option>
@@ -125,6 +132,12 @@
                         <option value="PHYSICS">Vật Lý Lượng Tử</option>
                         <option value="ENERGY">Năng Lượng Tái Tạo</option>
                         <option value="CHEM">Hóa Học & Vật Liệu</option>
+                    </select>
+
+                    <!-- Filter Tác giả Mới -->
+                    <select id="authorFilter" onchange="filterArticles()" class="w-full md:w-48 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
+                        <option value="ALL">Tất cả tác giả</option>
+                        <option value="Huỳnh Phúc Khánh Lộc">Huỳnh Phúc Khánh Lộc</option>
                     </select>
                 </div>
             </div>
@@ -138,7 +151,9 @@
                 <h2 class="text-2xl font-bold font-display text-slate-900 dark:text-white">Kho Bài Báo Nghiên Cứu Chuyên Sâu</h2>
                 <p class="text-sm text-slate-500 dark:text-slate-400">Các công trình xuất bản chính thức từ NXB Huỳnh Phúc Khánh Lộc</p>
             </div>
-            <span id="articleCount" class="text-xs font-semibold px-3 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">6 bài báo</span>
+            <div class="flex items-center gap-2">
+                <span id="articleCount" class="text-xs font-semibold px-3 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">6 bài báo</span>
+            </div>
         </div>
 
         <!-- Cards Grid -->
@@ -155,11 +170,13 @@
                 <p class="text-slate-600 dark:text-slate-400 text-sm mt-1">Mô phỏng thuật toán và hiện tượng khoa học bằng HTML5 Canvas trực tiếp trên trình duyệt</p>
             </div>
 
-            <!-- Lab Switcher Tabs -->
-            <div class="flex justify-center mb-6 space-x-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <!-- Lab Switcher Tabs Extended -->
+            <div class="flex flex-wrap justify-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-3">
                 <button onclick="switchLab('nn')" id="tab-nn" class="lab-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-brand-600 text-white transition-all">Mạng Nơ-ron (Neural Net)</button>
                 <button onclick="switchLab('dna')" id="tab-dna" class="lab-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Cấu Trúc DNA 3D</button>
                 <button onclick="switchLab('quantum')" id="tab-quantum" class="lab-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Hạt Lượng Tử (Quantum)</button>
+                <!-- Chức năng lab mới -->
+                <button onclick="switchLab('solar')" id="tab-solar" class="lab-tab px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Quang Phổ Solar (Energy)</button>
             </div>
 
             <!-- Simulation Canvas Container -->
@@ -244,10 +261,17 @@
                 <div class="flex items-center space-x-3">
                     <span id="modalCategoryTag" class="px-3 py-1 rounded-lg text-xs font-bold bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-300">AI</span>
                     <span id="modalDate" class="text-xs text-slate-400">15/10/2026</span>
+                    <span id="modalReadTime" class="text-xs text-slate-400 border-l border-slate-300 dark:border-slate-700 pl-3"><i class="fa-regular fa-clock"></i> 3 phút đọc</span>
                 </div>
-                <button onclick="closeReaderModal()" class="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <!-- Share Button -->
+                    <button onclick="shareArticle()" class="px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-medium transition-colors flex items-center gap-1">
+                        <i class="fa-solid fa-share-nodes"></i> Chia sẻ
+                    </button>
+                    <button onclick="closeReaderModal()" class="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Modal Content Body -->
@@ -371,7 +395,7 @@
 
     <!-- Application Logic Scripts -->
     <script>
-        // Article Data Repository Extended
+        // Extended Article Data Repository
         const articles = [
             {
                 id: "art-1",
@@ -380,6 +404,8 @@
                 title: "Khảo Sát Hành Vi 'Thức Khuya Chủ Động' (Bedtime Procrastination) ở Học Sinh THPT",
                 author: "Huỳnh Phúc Khánh Lộc",
                 date: "22/09/2026",
+                readTime: "4 phút",
+                views: 1240,
                 abstract: "Nghiên cứu khảo sát tâm lý hành vi trì hoãn giấc ngủ không do áp lực công việc ở học sinh THPT, đề xuất các giải pháp quản lý thời gian và vệ sinh giấc ngủ hiệu quả.",
                 body: `<p>Hành vi 'Thức khuya chủ động' (Bedtime Procrastination) đang trở thành một hiện tượng tâm lý phổ biến trong lứa tuổi học sinh trung học phổ thông. Công trình nghiên cứu này do <strong>Huỳnh Phúc Khánh Lộc</strong> (Trường THPT Nguyễn Đình Chiểu) chủ trì thực hiện nhằm phân tích nguyên nhân tâm lý và tác động đến hiệu suất học tập.</p>
                        <p>Thông qua khảo sát thực nghiệm trên nhóm học sinh THPT, nghiên cứu đã xác định các yếu tố kích thích từ thiết bị điện tử và nhu cầu tìm kiếm không gian cá nhân về đêm là hai nguyên nhân hàng đầu. Từ đó, đề xuất mô hình điều chỉnh hành vi theo chu kỳ 21 ngày.</p>`,
@@ -397,6 +423,8 @@
                 title: "Ứng Dụng Mạng Nơ-ron Nhân Tạo Trong Dự Đoán Cấu Trúc Biến Biến Gen Lượng Tử",
                 author: "Huỳnh Phúc Khánh Lộc",
                 date: "20/09/2026",
+                readTime: "5 phút",
+                views: 980,
                 abstract: "Nghiên cứu này đề xuất một kiến trúc Transformer sửa đổi nhằm tăng tốc độ tính toán vị trí gấp bội lần so với mô hình dự đoán cấu trúc sinh học truyền thống.",
                 body: `<p>Mạng nơ-ron nhân tạo ngày càng khẳng định vai trò trụ cột trong việc giải quyết các bài toán sinh học phức tạp. Trong công trình này, tác giả Huỳnh Phúc Khánh Lộc (Trường THPT Nguyễn Đình Chiểu) đã nghiên cứu tối ưu hóa hàm mất mát (loss function) cho mô hình deep learning.</p>
                        <p>Kết quả thử nghiệm cho thấy sự cải thiện rõ rệt về thời gian huấn luyện mô hình mà vẫn giữ nguyên độ chính xác 98.4% trên bộ dữ liệu chuẩn.</p>`,
@@ -415,6 +443,8 @@
                 title: "Mô Phỏng Tương Tác Cấu Trúc Xoắn Kép DNA Bằng Thuật Toán Hình Học Không Gian 3D",
                 author: "Huỳnh Phúc Khánh Lộc",
                 date: "12/08/2026",
+                readTime: "3 phút",
+                views: 850,
                 abstract: "Phương pháp biểu diễn thời gian thực chuỗi phân tử DNA trên môi trường HTML5 Canvas giúp nâng cao hiệu quả trực quan hóa bài giảng Sinh học THPT.",
                 body: `<p>Nhằm hỗ trợ quá trình tiếp thu kiến thức sinh học phân tử, bài báo xây dựng mô hình toán học cho chuỗi xoắn kép DNA dựa trên các phép quay không gian Euler.</p>
                        <p>Hệ thống hỗ trợ thao tác tương tác chuột và tùy chỉnh tần số sóng xoắn theo thời gian thực.</p>`,
@@ -432,6 +462,8 @@
                 title: "Mô Hình Hóa Sự Nhiễu Loạn Hạt Lượng Tử Trong Trường Lực Từ Nhân Tạo",
                 author: "Huỳnh Phúc Khánh Lộc",
                 date: "05/06/2026",
+                readTime: "4 phút",
+                views: 620,
                 abstract: "Khảo sát và mô phỏng số sự tương tác giữa các vi hạt lượng tử khi chịu tác động của điện trường ma trận.",
                 body: `<p>Nghiên cứu ứng dụng phương trình Schrödinger rút gọn để mô tả quỹ đạo chuyển động mang tính xác suất của vi hạt trong môi trường chân không giả lập.</p>`,
                 chartData: {
@@ -448,6 +480,8 @@
                 title: "Tối Ưu Hiệu Suất Mạng Lưới Pin Nhiệt Mặt Trời Perovskite Lớp Đôi Thế Hệ Mới",
                 author: "Huỳnh Phúc Khánh Lộc",
                 date: "18/05/2026",
+                readTime: "6 phút",
+                views: 1100,
                 abstract: "Giải pháp nâng cao độ bền thời tiết và dải hấp thụ quang phổ cho các tấm pin quang điện Perovskite áp dụng công nghệ màng phủ nano.",
                 body: `<p>Nghiên cứu trình bày giải pháp kết hợp hai lớp hấp thụ có khoảng cấm năng lượng bổ trợ nhau, giúp nâng cao hiệu suất chuyển đổi quang năng lên đến 34.2% trong điều kiện tiêu chuẩn thử nghiệm.</p>`,
                 chartData: {
@@ -464,6 +498,8 @@
                 title: "Tổng Hợp Vật Liệu Khung Kim Loại - Hữu Cơ (MOFs) Ứng Dụng Hấp Phụ Khí Nhà Kính",
                 author: "Huỳnh Phúc Khánh Lộc",
                 date: "02/04/2026",
+                readTime: "4 phút",
+                views: 740,
                 abstract: "Mô phỏng cấu trúc xốp vi mô của cấu trúc MOFs nhằm tối đa hóa diện tích bề mặt tiếp xúc và khả năng lưu trữ CO2 ở nhiệt độ phòng.",
                 body: `<p>Công trình xuất bản từ NXB Huỳnh Phúc Khánh Lộc giới thiệu phương pháp tổng hợp MOFs dung nhiệt nhẹ, giảm thiểu năng lượng tiêu tốn trong sản xuất vật liệu lọc môi trường.</p>`,
                 chartData: {
@@ -480,6 +516,36 @@
         let currentCitationFormat = 'APA';
         let synth = window.speechSynthesis;
         let isSpeaking = false;
+        let bookmarks = JSON.parse(localStorage.getItem('scitech_bookmarks') || '[]');
+        let showBookmarksOnly = false;
+
+        // Save and Load Bookmarks
+        function toggleBookmark(e, id) {
+            e.stopPropagation();
+            if(bookmarks.includes(id)) {
+                bookmarks = bookmarks.filter(bId => bId !== id);
+            } else {
+                bookmarks.push(id);
+            }
+            localStorage.setItem('scitech_bookmarks', JSON.stringify(bookmarks));
+            updateBookmarkCount();
+            filterArticles();
+        }
+
+        function updateBookmarkCount() {
+            document.getElementById('bookmarkCount').innerText = bookmarks.length;
+        }
+
+        function toggleBookmarkFilter() {
+            showBookmarksOnly = !showBookmarksOnly;
+            const btn = document.getElementById('bookmarkFilterBtn');
+            if(showBookmarksOnly) {
+                btn.classList.add('bg-amber-100', 'text-amber-700', 'dark:bg-amber-900/40');
+            } else {
+                btn.classList.remove('bg-amber-100', 'text-amber-700', 'dark:bg-amber-900/40');
+            }
+            filterArticles();
+        }
 
         // Render Articles Grid
         function renderArticles(list) {
@@ -487,18 +553,25 @@
             document.getElementById('articleCount').innerText = `${list.length} bài báo`;
             
             if(list.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Không tìm thấy bài báo phù hợp với từ khóa search/filter.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Không tìm thấy bài báo phù hợp với bộ lọc.</div>`;
                 return;
             }
 
-            grid.innerHTML = list.map(item => `
+            grid.innerHTML = list.map(item => {
+                const isBookmarked = bookmarks.includes(item.id);
+                return `
                 <div class="bg-white dark:bg-darkcard rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
                     <div>
                         <div class="flex items-center justify-between mb-3">
                             <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300">
                                 ${item.categoryName}
                             </span>
-                            <span class="text-xs text-slate-400">${item.date}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-slate-400"><i class="fa-regular fa-eye"></i> ${item.views}</span>
+                                <button onclick="toggleBookmark(event, '${item.id}')" class="text-slate-400 hover:text-amber-500 transition-colors p-1" title="Lưu bài viết">
+                                    <i class="${isBookmarked ? 'fa-solid text-amber-500' : 'fa-regular'} fa-bookmark text-sm"></i>
+                                </button>
+                            </div>
                         </div>
                         <h3 class="text-lg font-bold font-display text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors leading-snug mb-2">
                             ${item.title}
@@ -516,20 +589,23 @@
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // Filter Function
         function filterArticles() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const cat = document.getElementById('categoryFilter').value;
+            const author = document.getElementById('authorFilter').value;
 
             const filtered = articles.filter(item => {
                 const matchesCat = (cat === 'ALL' || item.category === cat);
+                const matchesAuthor = (author === 'ALL' || item.author === author);
+                const matchesBookmark = !showBookmarksOnly || bookmarks.includes(item.id);
                 const matchesSearch = item.title.toLowerCase().includes(query) || 
                                       item.abstract.toLowerCase().includes(query) || 
                                       item.author.toLowerCase().includes(query);
-                return matchesCat && matchesSearch;
+                return matchesCat && matchesAuthor && matchesBookmark && matchesSearch;
             });
 
             renderArticles(filtered);
@@ -542,6 +618,7 @@
 
             document.getElementById('modalCategoryTag').innerText = currentArticle.categoryName;
             document.getElementById('modalDate').innerText = currentArticle.date;
+            document.getElementById('modalReadTime').innerHTML = `<i class="fa-regular fa-clock"></i> ${currentArticle.readTime} đọc`;
             document.getElementById('modalTitle').innerText = currentArticle.title;
             document.getElementById('modalAuthor').innerText = currentArticle.author;
             document.getElementById('modalAbstract').innerText = currentArticle.abstract;
@@ -565,6 +642,16 @@
             stopAudioPodcast();
             document.getElementById('readerModal').classList.add('hidden');
             document.body.style.overflow = 'auto';
+        }
+
+        function shareArticle() {
+            if(!currentArticle) return;
+            const shareUrl = `${window.location.origin}${window.location.pathname}?id=${currentArticle.id}`;
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Đã sao chép liên kết bài báo vào bộ nhớ tạm!');
+            }).catch(() => {
+                alert('Không thể sao chép liên kết.');
+            });
         }
 
         function saveNotes() {
@@ -599,8 +686,9 @@
 
         function copyCitation() {
             const text = document.getElementById('citationText').innerText;
-            document.execCommand('copy');
-            alert('Đã sao chép trích dẫn vào bộ nhớ tạm!');
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Đã sao chép trích dẫn vào bộ nhớ tạm!');
+            });
         }
 
         // Audio Podcast TTS
@@ -678,7 +766,7 @@
         // CANVAS LAB SIMULATION ENGINE
         const canvas = document.getElementById('simCanvas');
         const ctx = canvas.getContext('2d');
-        let currentLabMode = 'nn'; // 'nn', 'dna', 'quantum'
+        let currentLabMode = 'nn'; // 'nn', 'dna', 'quantum', 'solar'
         let animationFrameId = null;
         let mouse = { x: 0, y: 0 };
 
@@ -821,10 +909,43 @@
             ctx.fill();
         }
 
+        // Solar Spectrum Simulation (Mới)
+        let solarRays = [];
+        function initSolar() {
+            solarRays = [];
+            for(let i = 0; i < 50; i++) {
+                solarRays.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    speed: 1 + Math.random() * 3,
+                    length: 10 + Math.random() * 30,
+                    hue: 30 + Math.random() * 30
+                });
+            }
+        }
+
+        function drawSolar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            solarRays.forEach(r => {
+                r.y += r.speed;
+                if(r.y > canvas.height) {
+                    r.y = 0;
+                    r.x = Math.random() * canvas.width;
+                }
+                ctx.strokeStyle = `hsl(${r.hue}, 100%, 60%)`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(r.x, r.y);
+                ctx.lineTo(r.x, r.y + r.length);
+                ctx.stroke();
+            });
+        }
+
         function simLoop() {
             if(currentLabMode === 'nn') drawNN();
             else if(currentLabMode === 'dna') drawDNA();
             else if(currentLabMode === 'quantum') drawQuantum();
+            else if(currentLabMode === 'solar') drawSolar();
 
             animationFrameId = requestAnimationFrame(simLoop);
         }
@@ -850,23 +971,28 @@
                 titleEl.innerHTML = '<i class="fa-solid fa-atom"></i> Quantum Cloud Simulation';
                 descEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> Mô hình hóa xác suất sự xuất hiện vi hạt trong quỹ đạo hạt nhân.';
                 initQuantum();
+            } else if(mode === 'solar') {
+                titleEl.innerHTML = '<i class="fa-solid fa-sun"></i> Perovskite Solar Spectrum Particle Flow';
+                descEl.innerHTML = '<i class="fa-solid fa-circle-info"></i> Mô phỏng dòng hạt photon quang điện va chạm bề mặt vật liệu Perovskite.';
+                initSolar();
             }
         }
 
         function resetLab() {
             if(currentLabMode === 'nn') initNN();
             else if(currentLabMode === 'quantum') initQuantum();
+            else if(currentLabMode === 'solar') initSolar();
         }
 
         // Initialize App on window load
         window.onload = function() {
-            // Apply saved dark mode theme preference
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
 
+            updateBookmarkCount();
             renderArticles(articles);
             resizeCanvas();
             initNN();
